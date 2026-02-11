@@ -1,0 +1,180 @@
+ja:
+  activerecord:
+    models:
+      user: ユーザー
+      book: 投稿
+      book_comment: コメント
+      favorite: いいね
+      rating: 評価
+      relationship: フォロー
+      bookmark: ブックマーク
+      notification: 通知
+      tag: タグ
+    attributes:
+      user:
+        name: 名前
+        email: メールアドレス
+        password: パスワード
+        password_confirmation: パスワード（確認）
+        username: ユーザーID
+        introduction: 自己紹介
+        profile_image: プロフィール画像
+      book:
+        title: タイトル
+        body: 感想
+        image: 表紙画像
+      book_comment:
+        comment: コメント
+      rating:
+        score: 評価
+    errors:
+      models:
+        user:
+          attributes:
+            name:
+              blank: を入力してください
+              too_short: は%{count}文字以上で入力してください
+              too_long: は%{count}文字以内で入力してください
+              taken: は既に使用されています
+            email:
+              blank: を入力してください
+              invalid: の形式が正しくありません
+              taken: は既に登録されています
+            password:
+              blank: を入力してください
+              too_short: は%{count}文字以上で入力してください
+            username:
+              taken: は既に使用されています
+              invalid: は英数字とアンダースコアのみ使用できます
+        book:
+          attributes:
+            title:
+              blank: を入力してください
+            body:
+              blank: を入力してください
+              too_long: は%{count}文字以内で入力してください
+        book_comment:
+          attributes:
+            comment:
+              blank: を入力してください
+
+  helpers:
+    submit:
+      create: 投稿する
+      update: 更新する
+      user:
+        create: 登録する
+        update: 保存する
+
+  time:
+    formats:
+      default: "%Y年%m月%d日 %H:%M"
+      short: "%m/%d %H:%M"
+      long: "%Y年%m月%d日(%a) %H時%M分"
+
+  date:
+    formats:
+      default: "%Y年%m月%d日"
+      short: "%m/%d"
+      long: "%Y年%m月%d日(%a)"
+
+  datetime:
+    distance_in_words:
+      about_x_hours:
+        one: 約1時間
+        other: 約%{count}時間
+      about_x_months:
+        one: 約1ヶ月
+        other: 約%{count}ヶ月
+      about_x_years:
+        one: 約1年
+        other: 約%{count}年
+      almost_x_years:
+        one: 1年弱
+        other: "%{count}年弱"
+      half_a_minute: 30秒
+      less_than_x_minutes:
+        one: 1分以内
+        other: "%{count}分以内"
+      less_than_x_seconds:
+        one: 1秒以内
+        other: "%{count}秒以内"
+      over_x_years:
+        one: 1年以上
+        other: "%{count}年以上"
+      x_days:
+        one: 1日
+        other: "%{count}日"
+      x_minutes:
+        one: 1分
+        other: "%{count}分"
+      x_months:
+        one: 1ヶ月
+        other: "%{count}ヶ月"
+      x_seconds:
+        one: 1秒
+        other: "%{count}秒"
+      x_years:
+        one: 1年
+        other: "%{count}年"
+
+  devise:
+    confirmations:
+      confirmed: メールアドレスの確認が完了しました。
+      send_instructions: 確認メールを送信しました。
+      send_paranoid_instructions: メールアドレスが登録されている場合、確認メールを送信します。
+    failure:
+      already_authenticated: すでにログインしています。
+      inactive: アカウントが有効化されていません。
+      invalid: "%{authentication_keys}またはパスワードが違います。"
+      locked: アカウントがロックされています。
+      last_attempt: もう一度失敗するとアカウントがロックされます。
+      not_found_in_database: "%{authentication_keys}またはパスワードが違います。"
+      timeout: セッションがタイムアウトしました。もう一度ログインしてください。
+      unauthenticated: ログインまたは登録が必要です。
+      unconfirmed: メールアドレスの確認が必要です。
+    mailer:
+      confirmation_instructions:
+        subject: メールアドレスの確認
+      reset_password_instructions:
+        subject: パスワードのリセット
+      unlock_instructions:
+        subject: アカウントのロック解除
+      email_changed:
+        subject: メールアドレスの変更
+      password_change:
+        subject: パスワードの変更
+    omniauth_callbacks:
+      failure: "%{kind}アカウントでの認証に失敗しました。理由：%{reason}"
+      success: "%{kind}アカウントで認証しました。"
+    passwords:
+      no_token: パスワードリセットのリンクが無効です。
+      send_instructions: パスワードリセットの手順を記載したメールを送信しました。
+      send_paranoid_instructions: メールアドレスが登録されている場合、パスワードリセットのメールを送信します。
+      updated: パスワードを変更しました。
+      updated_not_active: パスワードを変更しました。
+    registrations:
+      destroyed: アカウントを削除しました。
+      signed_up: 登録が完了しました。
+      signed_up_but_inactive: 登録が完了しました。アカウントが有効化されていないため、ログインできません。
+      signed_up_but_locked: 登録が完了しました。アカウントがロックされているため、ログインできません。
+      signed_up_but_unconfirmed: 確認メールを送信しました。
+      update_needs_confirmation: アカウント情報を変更しました。確認メールを送信しましたので、メールに記載されたリンクをクリックしてください。
+      updated: アカウント情報を変更しました。
+      updated_but_not_signed_in: アカウント情報を変更しました。もう一度ログインしてください。
+    sessions:
+      signed_in: ログインしました。
+      signed_out: ログアウトしました。
+      already_signed_out: すでにログアウトしています。
+    unlocks:
+      send_instructions: アカウントのロック解除方法を記載したメールを送信しました。
+      send_paranoid_instructions: アカウントが存在する場合、アカウントのロック解除方法を記載したメールを送信します。
+      unlocked: アカウントのロックを解除しました。
+
+  views:
+    pagination:
+      first: "&laquo; 最初"
+      last: "最後 &raquo;"
+      previous: "&lsaquo; 前"
+      next: "次 &rsaquo;"
+      truncate: "..."

@@ -1,80 +1,67 @@
 class BooksController < ApplicationController
-before_action :authenticate_user!
-before_action :correct_user, only: [:edit, :update]
-  def new# 新規作成画面を表示する処理
+  before_action :authenticate_user!
+  before_action :set_book, only: [:show, :edit, :update, :destroy]
+  before_action :authorize_book, only: [:edit, :update, :destroy]
+
+  def index
+    @books = Book.with_associations
+                 .recent
+                 .page(params[:page])
+                 .per(12)
     @book = Book.new
   end
 
+  def show
+    @book_comment = BookComment.new
+    @book_comments = @book.book_comments
+                          .includes(:user)
+                          .order(created_at: :desc)
+    @user_rating = @book.rating_by(current_user)
+  end
 
-  def create# 新規作成をする処理
-    @book = Book.new(book_params)
-    @book.user_id = current_user.id
+  def new
+    @book = Book.new
+  end
+
+  def create
+    @book = current_user.books.build(book_params)
+
     if @book.save
-      redirect_to book_path(@book.id), notice: "You have created book successfully."
+      redirect_to @book, notice: "投稿しました"
     else
-      @user = current_user
-      @users = User.all
-      @books = Book.all  # 投稿一覧を再取得する
-      render :index  # 投稿一覧と新規投稿フォームを表示する
+      @books = Book.with_associations.recent.page(params[:page]).per(12)
+      render :index, status: :unprocessable_entity
     end
   end
 
-
-  def index# 一覧表示する処理
-    @books = Book.all
-    @user = current_user
-    @book = Book.new
-  end
-
-
-  def show# 詳細表示する処理
-    @book = Book.find(params[:id])
-    @user = @book.user
-    # @books = @user.books
-    @book_new = Book.new
-    @book_comment = BookComment.new
-  end
-
+  def edit; end
 
   def update
-    @book = Book.find(params[:id])
-  if @book.update(book_params)
-    redirect_to book_path, notice: "Book was successfully creatred."
-  else
-    render :edit
-  end
-
-  end
-
-
-
-  def edit
-    @book = Book.find(params[:id])
-  end
-
-
-  def destroy# 削除する処理
-    book = Book.find(params[:id])
-    book.destroy
-    redirect_to books_path
-  end
-
- # 投稿データのストロングパラメータ
-  private
-
-
-
-  def correct_user
-    @book = Book.find(params[:id])
-    @user = @book.user
-    unless @user == current_user
-      redirect_to books_path
+    if @book.update(book_params)
+      redirect_to @book, notice: "更新しました"
+    else
+      render :edit, status: :unprocessable_entity
     end
   end
 
-
-  def book_params
-    params.require(:book).permit(:title, :body)
+  def destroy
+    @book.destroy
+    redirect_to books_path, notice: "削除しました", status: :see_other
   end
 
+  private
+
+  def set_book
+    @book = Book.find(params[:id])
+  end
+
+  def authorize_book
+    unless @book.user == current_user
+      redirect_to books_path, alert: "この操作を行う権限がありません"
+    end
+  end
+
+  def book_params
+    params.require(:book).permit(:title, :body, :image, :tag_list)
+  end
 end

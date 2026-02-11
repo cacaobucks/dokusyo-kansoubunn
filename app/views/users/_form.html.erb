@@ -1,0 +1,78 @@
+<%# locals: (user:) %>
+<%= form_with model: user, class: "space-y-6" do |f| %>
+  <% if user.errors.any? %>
+    <div class="bg-accent-danger/10 border border-accent-danger/20 rounded-lg p-4">
+      <div class="flex items-center gap-2 text-accent-danger mb-2">
+        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        <span class="font-medium">入力エラー</span>
+      </div>
+      <ul class="list-disc list-inside text-sm text-accent-danger space-y-1">
+        <% user.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <!-- Profile Image -->
+  <div class="form-group">
+    <%= f.label :profile_image, "プロフィール画像", class: "form-label" %>
+    <div class="flex items-center gap-6">
+      <div class="flex-shrink-0">
+        <% if user.profile_image.attached? %>
+          <%= image_tag user.profile_image.variant(resize_to_fill: [80, 80]), class: "avatar avatar-lg" %>
+        <% else %>
+          <div class="avatar avatar-lg bg-accent-primary flex items-center justify-center text-white text-2xl font-medium">
+            <%= user.name[0].upcase %>
+          </div>
+        <% end %>
+      </div>
+      <div class="flex-1">
+        <%= f.file_field :profile_image,
+                         accept: "image/*",
+                         class: "block w-full text-sm text-secondary
+                                 file:mr-4 file:py-2 file:px-4
+                                 file:rounded-lg file:border-0
+                                 file:text-sm file:font-medium
+                                 file:bg-bg-tertiary file:text-primary
+                                 hover:file:bg-border-color
+                                 cursor-pointer" %>
+      </div>
+    </div>
+  </div>
+
+  <!-- Name -->
+  <div class="form-group">
+    <%= f.label :name, "名前", class: "form-label" %>
+    <%= f.text_field :name, class: "form-input", placeholder: "表示名（2〜20文字）" %>
+  </div>
+
+  <!-- Username -->
+  <div class="form-group">
+    <%= f.label :username, "ユーザーID", class: "form-label" %>
+    <div class="relative">
+      <span class="absolute left-4 top-2.5 text-muted">@</span>
+      <%= f.text_field :username, class: "form-input pl-8", placeholder: "username（英数字のみ）" %>
+    </div>
+    <p class="text-xs text-muted mt-1">英数字とアンダースコアのみ使用できます</p>
+  </div>
+
+  <!-- Introduction -->
+  <div class="form-group">
+    <%= f.label :introduction, "自己紹介", class: "form-label" %>
+    <%= f.text_area :introduction,
+                    class: "form-textarea",
+                    placeholder: "自己紹介を入力（160文字以内）",
+                    rows: 3,
+                    maxlength: 160 %>
+    <div class="text-xs text-muted mt-1 text-right">
+      <span><%= user.introduction&.length || 0 %></span>/160
+    </div>
+  </div>
+
+  <div class="pt-4">
+    <%= f.submit "保存する", class: "btn-primary w-full" %>
+  </div>
+<% end %>

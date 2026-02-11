@@ -1,0 +1,23 @@
+<%# locals: (book:, book_comment:) %>
+<%= form_with model: [book, book_comment], class: "flex gap-3", id: "comment_form_inner" do |f| %>
+  <% if current_user.profile_image.attached? %>
+    <%= image_tag current_user.profile_image.variant(resize_to_fill: [40, 40]), class: "avatar avatar-md flex-shrink-0" %>
+  <% else %>
+    <div class="avatar avatar-md bg-accent-primary flex items-center justify-center text-white font-medium flex-shrink-0">
+      <%= current_user.name[0].upcase %>
+    </div>
+  <% end %>
+
+  <div class="flex-1">
+    <%= f.text_area :comment,
+                    class: "form-input text-sm",
+                    placeholder: "コメントを入力...",
+                    rows: 2 %>
+    <% if book_comment.errors[:comment].any? %>
+      <p class="form-error"><%= book_comment.errors[:comment].first %></p>
+    <% end %>
+    <div class="flex justify-end mt-2">
+      <%= f.submit "コメントする", class: "btn-primary btn-sm" %>
+    </div>
+  </div>
+<% end %>

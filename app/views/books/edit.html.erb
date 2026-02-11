@@ -1,29 +1,18 @@
-<div class= "container">
-  <div class= "row">
-    <div class="col-sm-12 col-md-8 col-lg-5 px-5 px-sm-0 mx-auto">
-      <h1>Editing Book</h1>
-      <% if @book.errors.any? %>
-        <%= @book.errors.count %>errors prohibited this book from being saved: %>
-      <ul>
-        <% @book.errors.full_messages.each do |message| %>
-        <li><%= message %></li>
-        <% end %>
-      </ul>
-      <% end %>
-      <%= form_for @book, method: :patch do |f| %>
-        <div class="form-group">
-          <%= f.label :title %>
-          <%= f.text_field :title, class: "form-control" %>
-        </div>
-        <div class="form-group">
-          <%= f.label :body %>
-          <%= f.text_area :body, class: "form-control" %>
-        </div>
-          <%= f.submit "Update Book", class:"btn btn-success" %>
-          <br>
-          <%= link_to "Show", "/books/#{@book.id}" %>
-　        <%= link_to "Back", books_path %>
-      <% end %>
+<div class="max-w-2xl mx-auto">
+  <div class="mb-6">
+    <%= link_to book_path(@book), class: "inline-flex items-center gap-2 text-secondary hover:text-primary transition-colors" do %>
+      <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+      </svg>
+      <span>投稿に戻る</span>
+    <% end %>
+  </div>
+
+  <div class="card card-body">
+    <h1 class="text-2xl font-bold text-primary mb-6">投稿を編集</h1>
+
+    <div id="book_form">
+      <%= render "books/form", book: @book %>
     </div>
   </div>
 </div>

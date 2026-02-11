@@ -1,92 +1,177 @@
-<div class="container">
-  <div class="row">
-    <div class="col-md-3">
-      <h3>User info</h3>
-      <%= image_tag @user.get_profile_image(100,100) %>
-      <% if user_signed_in? %>
-        <h3>name:<%= @user.name %></h3>
-        <h3>introduction:<%= @user.introduction %></h3>
-      <% end %>
-      <%= link_to edit_user_path(@user.id), class: "btn btn-outline-secondary btn-block" do %>
-        <i class="fas fa-user-cog"></i>
-      <% end %>
-      <h2>New book</h2>
-      <%= form_with model: @book_new do |f| %>
-        <div class="form-group">
-          <h4>Title</h4>
-          <%= f.text_field :title, class:"form-control" %>
-        </div>
-        <div class="form-group">
-          <h4>Body</h4>
-          <%= f.text_area :body, class:"form-control", rows:"3"%>
-        </div>
-        <%= f.submit 'Create Book', class:"btn btn-lg btn-block btn-success mt-4" %>
-      <% end %>
-    </div>
-    <div class="col-md-8 offset-md-1">
-      <div class="container">
-      <h2>Book detail</h2>
-      <table class="table table-hover table-inverse">
-        <thead>
-          <tr>
-          <!--<th></th>-->
-          <!--<th></th>-->
-          <!--<th></th>-->
-          <!--<th></th>-->
-          <!--<th></th>-->
-          </tr>
-        </thead>
-        <tbody>
-            <tr>
-              <td>
-                <%= link_to user_path(@book.user) do %>
-                 <ul>
-                <%= image_tag @book.user.get_profile_image(100,100) %>
-                 <br>
-                <%= @book.user.name %>
-                <% end %>
-              </td>
-              <td><%= link_to @book.title, book_path(@book.id), class:"text-blue" %></td>
-              <td><%= @book.body %></td>
-              <% if current_user == @user %>
-                <td><%= link_to "Edit", edit_book_path(@book), class:"btn btn-sm btn-success" %></td>
-                <td><%= link_to "Destroy", book_path(@book.id), method: :delete, "data-confirm" => "re you sure you want to delete this book?", class: "btn btn-sm btn-danger"%></td>
-              <% end %>
-
-              <% if @book.favorited_by?(current_user) %>
-              <td>
-                <%= link_to book_favorites_path(@book), method: :delete do %>
-                <i class="fas fa-heart" style="color: #d40c0c;"></i><%= @book.favorites.count %>
-                <% end %>
-              </td>
-              <% else %>
-              <td>
-                <%= link_to book_favorites_path(@book), method: :post do %>
-                <i class="fas fa-heart" style="color: #1888cd;"></i><%= @book.favorites.count %>
-                <% end %>
-              </td>
-              <% end %>
-              <td>コメント件数：<%= @book.book_comments.count %></td>
-              <br>
-            </tr>
-        </tbody>
-      </table>
-          <% @book.book_comments.each do |book_comment| %>
-              <p><%= image_tag book_comment.user.get_profile_image(100,100) %></p>
-              <%= book_comment.user.name %>
-              <%= book_comment.comment %>
-            <% if book_comment.user == current_user %>
-              <%= link_to "Destroy", book_book_comment_path(book_comment.book, book_comment), method: :delete, class: "btn btn-sm btn-danger" %>
-            <% end %>
-          <br>
-          <% end %>
-          <br>
-          <br>
-          <%= form_with model: [@book, @book_comment] do |f| %>
-            <%= f.text_area :comment, rows: '5', placeholder: "コメントをここに", style: "width: 100%;" %>
-            <%= f.submit "送信する" %>
-          <% end %>
+<div class="grid lg:grid-cols-3 gap-8">
+  <!-- Main Content -->
+  <main class="lg:col-span-2">
+    <article class="card overflow-hidden">
+      <!-- Book Header -->
+      <div class="relative">
+        <% if @book.image.attached? %>
+          <div class="aspect-video bg-bg-tertiary">
+            <%= image_tag @book.image, class: "w-full h-full object-cover" %>
+          </div>
+        <% else %>
+          <div class="aspect-video bg-bg-tertiary flex items-center justify-center">
+            <svg class="h-24 w-24 text-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                    d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+            </svg>
+          </div>
+        <% end %>
       </div>
+
+      <div class="p-6">
+        <!-- Title & Actions -->
+        <div class="flex items-start justify-between gap-4 mb-4">
+          <h1 class="text-2xl font-bold text-primary"><%= @book.title %></h1>
+          <% if current_user == @book.user %>
+            <div class="flex items-center gap-2 flex-shrink-0">
+              <%= link_to edit_book_path(@book), class: "btn-secondary btn-sm" do %>
+                <svg class="h-4 w-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                </svg>
+                編集
+              <% end %>
+              <%= link_to book_path(@book), class: "btn-danger btn-sm", data: { turbo_method: :delete, turbo_confirm: "この投稿を削除しますか？" } do %>
+                <svg class="h-4 w-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                </svg>
+                削除
+              <% end %>
+            </div>
+          <% end %>
+        </div>
+
+        <!-- Rating -->
+        <div id="rating_section" class="mb-6">
+          <%= render "ratings/rating_form", book: @book, user_rating: @user_rating %>
+        </div>
+
+        <!-- Tags -->
+        <% if @book.tags.any? %>
+          <div class="flex flex-wrap gap-2 mb-6">
+            <% @book.tags.each do |tag| %>
+              <%= link_to search_path(q: tag.name), class: "badge badge-primary" do %>
+                #<%= tag.name %>
+              <% end %>
+            <% end %>
+          </div>
+        <% end %>
+
+        <!-- Body -->
+        <div class="prose prose-invert max-w-none mb-6">
+          <p class="text-primary whitespace-pre-wrap"><%= @book.body %></p>
+        </div>
+
+        <!-- Actions -->
+        <div class="flex items-center gap-6 pt-6 border-t border-border-color">
+          <div id="favorite_button_<%= @book.id %>">
+            <%= render "books/favorite_button", book: @book %>
+          </div>
+
+          <span class="flex items-center gap-1 text-secondary">
+            <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+            </svg>
+            <span id="comments_count_<%= @book.id %>"><%= @book.book_comments_count %></span>
+          </span>
+
+          <div id="bookmark_button_<%= @book.id %>" class="ml-auto">
+            <%= render "books/bookmark_button", book: @book %>
+          </div>
+        </div>
+
+        <!-- User Info -->
+        <div class="flex items-center gap-3 mt-6 pt-6 border-t border-border-color">
+          <%= link_to user_path(@book.user), class: "flex items-center gap-3 hover:opacity-80 transition-opacity" do %>
+            <% if @book.user.profile_image.attached? %>
+              <%= image_tag @book.user.profile_image.variant(resize_to_fill: [48, 48]), class: "avatar avatar-md" %>
+            <% else %>
+              <div class="avatar avatar-md bg-accent-primary flex items-center justify-center text-white font-medium">
+                <%= @book.user.name[0].upcase %>
+              </div>
+            <% end %>
+            <div>
+              <div class="font-medium text-primary"><%= @book.user.name %></div>
+              <div class="text-sm text-muted"><%= time_ago_in_words(@book.created_at) %>前に投稿</div>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </article>
+
+    <!-- Comments Section -->
+    <section id="comments" class="card mt-8">
+      <div class="p-6 border-b border-border-color">
+        <h2 class="text-lg font-semibold text-primary flex items-center gap-2">
+          <svg class="h-5 w-5 text-accent-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+          </svg>
+          コメント (<span id="comments_total"><%= @book_comments.count %></span>)
+        </h2>
+      </div>
+
+      <!-- Comment Form -->
+      <div class="p-6 border-b border-border-color bg-bg-tertiary/50">
+        <div id="comment_form">
+          <%= render "book_comments/form", book: @book, book_comment: @book_comment %>
+        </div>
+      </div>
+
+      <!-- Comments List -->
+      <div id="comments_list" class="divide-y divide-border-color">
+        <% if @book_comments.any? %>
+          <% @book_comments.each do |comment| %>
+            <%= render "book_comments/comment", comment: comment %>
+          <% end %>
+        <% else %>
+          <div class="p-8 text-center text-muted">
+            まだコメントはありません
+          </div>
+        <% end %>
+      </div>
+    </section>
+  </main>
+
+  <!-- Sidebar -->
+  <aside class="lg:col-span-1">
+    <!-- Author Card -->
+    <div class="card card-body sticky top-24">
+      <h3 class="text-sm font-medium text-muted mb-4">投稿者</h3>
+      <%= link_to user_path(@book.user), class: "block text-center hover:opacity-80 transition-opacity" do %>
+        <% if @book.user.profile_image.attached? %>
+          <%= image_tag @book.user.profile_image.variant(resize_to_fill: [80, 80]), class: "avatar avatar-lg mx-auto mb-3" %>
+        <% else %>
+          <div class="avatar avatar-lg bg-accent-primary flex items-center justify-center text-white text-xl font-medium mx-auto mb-3">
+            <%= @book.user.name[0].upcase %>
+          </div>
+        <% end %>
+        <div class="font-medium text-primary"><%= @book.user.name %></div>
+        <% if @book.user.username.present? %>
+          <div class="text-sm text-muted">@<%= @book.user.username %></div>
+        <% end %>
+      <% end %>
+
+      <% if @book.user.introduction.present? %>
+        <p class="text-sm text-secondary mt-4 text-center"><%= @book.user.introduction %></p>
+      <% end %>
+
+      <div class="grid grid-cols-2 gap-4 mt-6 pt-4 border-t border-border-color text-center">
+        <div>
+          <div class="text-lg font-semibold text-primary"><%= @book.user.books_count %></div>
+          <div class="text-xs text-muted">投稿</div>
+        </div>
+        <div>
+          <div class="text-lg font-semibold text-primary"><%= @book.user.followers_count %></div>
+          <div class="text-xs text-muted">フォロワー</div>
+        </div>
+      </div>
+
+      <% if user_signed_in? && current_user != @book.user %>
+        <div id="follow_button_<%= @book.user.id %>" class="mt-6">
+          <%= render "users/follow_button", user: @book.user %>
+        </div>
+      <% end %>
     </div>
-  </div>
+  </aside>
 </div>

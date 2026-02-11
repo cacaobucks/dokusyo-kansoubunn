@@ -1,28 +1,18 @@
-<div class="col-sm-12 col-md-8 col-lg-5 px-5 px-sm-0 mx-auto">
-  <h2>User info</h2>
-  <% if @user.errors.any? %>
-    <h2><%= @user.errors.count %>errors prohibited this book from being saved:</h2>
-    <ul>
-    <% @user.errors.full_messages.each do |message| %>
-    <li><%= message %></li>
+<div class="max-w-2xl mx-auto">
+  <div class="mb-6">
+    <%= link_to user_path(@user), class: "inline-flex items-center gap-2 text-secondary hover:text-primary transition-colors" do %>
+      <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+      </svg>
+      <span>プロフィールに戻る</span>
     <% end %>
-    </ul>
-  <% end %>
-  <%= form_with model: @user do |f| %>
-  <div class="form-group">
-    <label for="user_name">Name</label>
-    <%= f.text_field :name, autofocus: true, id:"inputName", placeholder:"Name"%>
   </div>
-  <div class="form-group">
-    <label for="user_image">Image</label>
-    <%= f.file_field :profile_image, placeholder: "Image", accept: "image/*" %>
+
+  <div class="card card-body">
+    <h1 class="text-2xl font-bold text-primary mb-6">プロフィール編集</h1>
+
+    <div id="user_form">
+      <%= render "users/form", user: @user %>
+    </div>
   </div>
-  <div class="form-group">
-    <label for="user_introduction">Introduction</label>
-    <%= f.text_field :introduction, autofocus: true, id:"inputIntroduction", placeholder:"introduction"%>
-  </div>
-  <div class="btn btn-secondary" input type="submit" name="commit" value="Update User" data-disable-with="Update User" >
-  <%= f.submit %>
-  </div>
-  <%end%>
 </div>

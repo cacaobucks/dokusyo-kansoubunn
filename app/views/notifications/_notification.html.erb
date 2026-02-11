@@ -1,0 +1,56 @@
+<%# locals: (notification:) %>
+<div class="p-4 flex items-start gap-4 <%= notification.read? ? '' : 'bg-accent-primary/5' %>" id="<%= dom_id(notification) %>">
+  <!-- Actor Avatar -->
+  <%= link_to user_path(notification.actor), class: "flex-shrink-0" do %>
+    <% if notification.actor.profile_image.attached? %>
+      <%= image_tag notification.actor.profile_image.variant(resize_to_fill: [48, 48]), class: "avatar avatar-md" %>
+    <% else %>
+      <div class="avatar avatar-md bg-accent-primary flex items-center justify-center text-white font-medium">
+        <%= notification.actor.name[0].upcase %>
+      </div>
+    <% end %>
+  <% end %>
+
+  <!-- Content -->
+  <div class="flex-1 min-w-0">
+    <p class="text-sm text-primary">
+      <span class="font-medium"><%= notification.actor.name %></span>
+      <span class="text-secondary">
+        <% case notification.action %>
+        <% when "favorite" %>
+          があなたの投稿にいいねしました
+        <% when "comment" %>
+          があなたの投稿にコメントしました
+        <% when "follow" %>
+          があなたをフォローしました
+        <% end %>
+      </span>
+    </p>
+
+    <% if notification.action.in?(%w[favorite comment]) && notification.notifiable&.respond_to?(:book) %>
+      <p class="text-sm text-muted mt-1 truncate">
+        「<%= notification.notifiable.book.title %>」
+      </p>
+    <% end %>
+
+    <p class="text-xs text-muted mt-1"><%= time_ago_in_words(notification.created_at) %>前</p>
+  </div>
+
+  <!-- Actions -->
+  <div class="flex items-center gap-2 flex-shrink-0">
+    <% unless notification.read? %>
+      <%= button_to mark_as_read_notification_path(notification), method: :patch, class: "text-accent-primary hover:underline text-xs" do %>
+        既読
+      <% end %>
+    <% end %>
+
+    <% target = notification.target_path %>
+    <% if target %>
+      <%= link_to polymorphic_path(target), class: "btn-ghost btn-sm" do %>
+        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+        </svg>
+      <% end %>
+    <% end %>
+  </div>
+</div>

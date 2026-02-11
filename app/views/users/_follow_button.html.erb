@@ -1,0 +1,16 @@
+<%# locals: (user:) %>
+<% if current_user.following?(user) %>
+  <%= button_to user_relationship_path(user),
+                method: :delete,
+                class: "btn-secondary w-full",
+                data: { turbo_frame: "_top" } do %>
+    フォロー中
+  <% end %>
+<% else %>
+  <%= button_to user_relationship_path(user),
+                method: :post,
+                class: "btn-primary w-full",
+                data: { turbo_frame: "_top" } do %>
+    フォローする
+  <% end %>
+<% end %>

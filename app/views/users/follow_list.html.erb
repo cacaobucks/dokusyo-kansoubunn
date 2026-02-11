@@ -1,0 +1,97 @@
+<div class="max-w-2xl mx-auto">
+  <!-- Back Link -->
+  <div class="mb-6">
+    <%= link_to user_path(@user), class: "inline-flex items-center gap-2 text-secondary hover:text-primary transition-colors" do %>
+      <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+      </svg>
+      <span><%= @user.name %>のプロフィール</span>
+    <% end %>
+  </div>
+
+  <!-- Header -->
+  <div class="flex items-center gap-4 mb-6">
+    <% if @user.profile_image.attached? %>
+      <%= image_tag @user.profile_image.variant(resize_to_fill: [48, 48]), class: "avatar avatar-md" %>
+    <% else %>
+      <div class="avatar avatar-md bg-accent-primary flex items-center justify-center text-white font-medium">
+        <%= @user.name[0].upcase %>
+      </div>
+    <% end %>
+    <div>
+      <h1 class="text-xl font-bold text-primary">
+        <%= action_name == "followers" ? "フォロワー" : "フォロー中" %>
+      </h1>
+      <p class="text-sm text-muted"><%= @user.name %></p>
+    </div>
+  </div>
+
+  <!-- Tabs -->
+  <div class="tabs mb-6">
+    <%= link_to followers_user_path(@user),
+                class: "tab #{action_name == 'followers' ? 'tab-active' : ''}" do %>
+      フォロワー (<%= @user.followers_count %>)
+    <% end %>
+    <%= link_to following_user_path(@user),
+                class: "tab #{action_name == 'following' ? 'tab-active' : ''}" do %>
+      フォロー中 (<%= @user.following_count %>)
+    <% end %>
+  </div>
+
+  <!-- User List -->
+  <% if @users.any? %>
+    <div class="space-y-4">
+      <% @users.each do |user| %>
+        <div class="card card-body">
+          <div class="flex items-center gap-4">
+            <%= link_to user_path(user), class: "flex items-center gap-3 flex-1 hover:opacity-80 transition-opacity" do %>
+              <% if user.profile_image.attached? %>
+                <%= image_tag user.profile_image.variant(resize_to_fill: [48, 48]), class: "avatar avatar-md" %>
+              <% else %>
+                <div class="avatar avatar-md bg-accent-primary flex items-center justify-center text-white font-medium">
+                  <%= user.name[0].upcase %>
+                </div>
+              <% end %>
+              <div>
+                <div class="font-medium text-primary"><%= user.name %></div>
+                <% if user.username.present? %>
+                  <div class="text-sm text-muted">@<%= user.username %></div>
+                <% end %>
+              </div>
+            <% end %>
+
+            <% if user_signed_in? && current_user != user %>
+              <div id="follow_button_<%= user.id %>" class="flex-shrink-0">
+                <% if current_user.following?(user) %>
+                  <%= button_to user_relationship_path(user), method: :delete, class: "btn-secondary btn-sm" do %>
+                    フォロー中
+                  <% end %>
+                <% else %>
+                  <%= button_to user_relationship_path(user), method: :post, class: "btn-primary btn-sm" do %>
+                    フォロー
+                  <% end %>
+                <% end %>
+              </div>
+            <% end %>
+          </div>
+        </div>
+      <% end %>
+    </div>
+
+    <% if @users.total_pages > 1 %>
+      <div class="mt-8 flex justify-center">
+        <%= paginate @users %>
+      </div>
+    <% end %>
+  <% else %>
+    <div class="empty-state">
+      <svg class="empty-state-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+              d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+      </svg>
+      <h3 class="empty-state-title">
+        <%= action_name == "followers" ? "フォロワーはいません" : "フォローしているユーザーはいません" %>
+      </h3>
+    </div>
+  <% end %>
+</div>

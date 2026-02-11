@@ -1,17 +1,133 @@
-<div class="container">
-  <div class="mx-auto col-11 col-sm-10 col-lg-8 col-xl-6">
-    <!--<script src="https://kit.fontawesome.com/b5f8a3cfe1.js" crossorigin="anonymous"></script>-->
-    <h1>Welcome to Bookers !!</h1>
-    <span>In</span>
-    <i class="fas fa-book"></i>
-    <span>Bookers</span>
-    <br>
-    <span>you can share and exchange your opinions , inpressions , and emotions about various books!</span>
-    <div class="row">
-      <a class="btn btn-info btn-sm btn-block mb-3 sign_in" href="/users/sign_in">Log in</a>
-    </div>
-    <div class="row">
-      <a class="btn btn-success btn-sm btn-block sign_up" href="/users/sign_up">Sign up</a>
+<!-- Hero Section -->
+<section class="relative py-20 md:py-32">
+  <div class="text-center max-w-4xl mx-auto">
+    <h1 class="text-4xl md:text-6xl font-bold mb-6">
+      <span class="text-gradient">本を読む。感想を書く。</span>
+      <br>
+      <span class="text-primary">世界とつながる。</span>
+    </h1>
+    <p class="text-lg md:text-xl text-secondary mb-10 max-w-2xl mx-auto">
+      読書感想文は、読書体験を共有し、本を通じて人とつながるソーシャルプラットフォームです。
+      あなたの感想が、誰かの次の一冊になるかもしれません。
+    </p>
+    <div class="flex flex-col sm:flex-row gap-4 justify-center">
+      <%= link_to new_user_registration_path, class: "btn-primary btn-lg" do %>
+        <svg class="h-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+        </svg>
+        無料で始める
+      <% end %>
+      <%= link_to about_path, class: "btn-secondary btn-lg" do %>
+        詳しく見る
+      <% end %>
     </div>
   </div>
-</div>
+</section>
+
+<!-- Features Section -->
+<section class="py-16 border-t border-border-color">
+  <h2 class="text-2xl md:text-3xl font-bold text-center mb-12">
+    <span class="text-gradient">読書感想文の特徴</span>
+  </h2>
+  <div class="grid md:grid-cols-3 gap-8">
+    <div class="card card-body text-center">
+      <div class="w-14 h-14 bg-accent-primary/10 rounded-xl flex items-center justify-center mx-auto mb-4">
+        <svg class="h-7 w-7 text-accent-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+        </svg>
+      </div>
+      <h3 class="text-lg font-semibold text-primary mb-2">感想を投稿</h3>
+      <p class="text-secondary text-sm">
+        読んだ本の感想を簡単に投稿。タグ付けで整理もラクラク。
+      </p>
+    </div>
+
+    <div class="card card-body text-center">
+      <div class="w-14 h-14 bg-accent-success/10 rounded-xl flex items-center justify-center mx-auto mb-4">
+        <svg class="h-7 w-7 text-accent-success" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M17 8h2a2 2 0 012 2v6a2 2 0 01-2 2h-2v4l-4-4H9a1.994 1.994 0 01-1.414-.586m0 0L11 14h4a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2v4l.586-.586z" />
+        </svg>
+      </div>
+      <h3 class="text-lg font-semibold text-primary mb-2">交流する</h3>
+      <p class="text-secondary text-sm">
+        コメントやいいねで他のユーザーと交流。新しい本との出会いも。
+      </p>
+    </div>
+
+    <div class="card card-body text-center">
+      <div class="w-14 h-14 bg-accent-purple/10 rounded-xl flex items-center justify-center mx-auto mb-4">
+        <svg class="h-7 w-7 text-accent-purple" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
+        </svg>
+      </div>
+      <h3 class="text-lg font-semibold text-primary mb-2">評価する</h3>
+      <p class="text-secondary text-sm">
+        5段階評価で本を採点。みんなの評価で人気の本がわかる。
+      </p>
+    </div>
+  </div>
+</section>
+
+<% if @trending_books&.any? %>
+  <!-- Trending Section -->
+  <section class="py-16 border-t border-border-color">
+    <div class="flex items-center justify-between mb-8">
+      <h2 class="text-2xl font-bold text-primary flex items-center gap-2">
+        <svg class="h-6 w-6 text-accent-danger" fill="currentColor" viewBox="0 0 20 20">
+          <path fill-rule="evenodd" d="M12.395 2.553a1 1 0 00-1.45-.385c-.345.23-.614.558-.822.88-.214.33-.403.713-.57 1.116-.334.804-.614 1.768-.84 2.734a31.365 31.365 0 00-.613 3.58 2.64 2.64 0 01-.945-1.067c-.328-.68-.398-1.534-.398-2.654A1 1 0 005.05 6.05 6.981 6.981 0 003 11a7 7 0 1011.95-4.95c-.592-.591-.98-.985-1.348-1.467-.363-.476-.724-1.063-1.207-2.03zM12.12 15.12A3 3 0 017 13s.879.5 2.5.5c0-1 .5-4 1.25-4.5.5 1 .786 1.293 1.371 1.879A2.99 2.99 0 0113 13a2.99 2.99 0 01-.879 2.121z" clip-rule="evenodd" />
+        </svg>
+        トレンド
+      </h2>
+    </div>
+    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      <% @trending_books.each do |book| %>
+        <%= render "books/book_card", book: book, show_user: true %>
+      <% end %>
+    </div>
+  </section>
+<% end %>
+
+<!-- Stats Section -->
+<section class="py-16 border-t border-border-color">
+  <div class="grid grid-cols-3 gap-8">
+    <div class="text-center">
+      <div class="text-3xl md:text-4xl font-bold text-accent-primary mb-2">
+        <%= number_with_delimiter(@stats[:books_count]) %>
+      </div>
+      <div class="text-sm text-secondary">投稿数</div>
+    </div>
+    <div class="text-center">
+      <div class="text-3xl md:text-4xl font-bold text-accent-success mb-2">
+        <%= number_with_delimiter(@stats[:users_count]) %>
+      </div>
+      <div class="text-sm text-secondary">ユーザー</div>
+    </div>
+    <div class="text-center">
+      <div class="text-3xl md:text-4xl font-bold text-accent-purple mb-2">
+        <%= number_with_delimiter(@stats[:comments_count]) %>
+      </div>
+      <div class="text-sm text-secondary">コメント</div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA Section -->
+<section class="py-16 border-t border-border-color">
+  <div class="card card-body text-center py-12 bg-gradient-to-r from-accent-primary/5 to-accent-purple/5">
+    <h2 class="text-2xl md:text-3xl font-bold text-primary mb-4">
+      今すぐ始めよう
+    </h2>
+    <p class="text-secondary mb-8 max-w-md mx-auto">
+      アカウント登録は無料。あなたの読書体験を世界と共有しましょう。
+    </p>
+    <%= link_to new_user_registration_path, class: "btn-primary btn-lg inline-flex" do %>
+      無料で登録する
+      <svg class="h-5 w-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+      </svg>
+    <% end %>
+  </div>
+</section>

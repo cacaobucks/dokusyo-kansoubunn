@@ -1,0 +1,97 @@
+<div class="max-w-4xl mx-auto">
+  <!-- Search Form -->
+  <div class="mb-8">
+    <%= form_with url: search_path, method: :get, class: "relative" do %>
+      <input type="text"
+             name="q"
+             value="<%= @query %>"
+             placeholder="キーワードを入力..."
+             class="form-input pl-12 pr-4 py-3 text-lg"
+             autofocus>
+      <svg class="absolute left-4 top-4 h-6 w-6 text-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+      </svg>
+    <% end %>
+  </div>
+
+  <% if @query.present? %>
+    <!-- Tabs -->
+    <div class="tabs mb-6">
+      <%= link_to search_path(q: @query, type: "books"),
+                  class: "tab #{@type == 'books' ? 'tab-active' : ''}" do %>
+        投稿
+        <% if @books %>
+          <span class="ml-1 text-muted">(<%= @books.total_count %>)</span>
+        <% end %>
+      <% end %>
+      <%= link_to search_path(q: @query, type: "users"),
+                  class: "tab #{@type == 'users' ? 'tab-active' : ''}" do %>
+        ユーザー
+        <% if @users %>
+          <span class="ml-1 text-muted">(<%= @users.total_count %>)</span>
+        <% end %>
+      <% end %>
+    </div>
+
+    <!-- Results -->
+    <% if @type == "users" %>
+      <% if @users&.any? %>
+        <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          <% @users.each do |user| %>
+            <%= render "users/user_card", user: user %>
+          <% end %>
+        </div>
+
+        <% if @users.total_pages > 1 %>
+          <div class="mt-8 flex justify-center">
+            <%= paginate @users %>
+          </div>
+        <% end %>
+      <% else %>
+        <div class="empty-state">
+          <svg class="empty-state-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                  d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+          </svg>
+          <h3 class="empty-state-title">ユーザーが見つかりません</h3>
+          <p class="empty-state-text">「<%= @query %>」に一致するユーザーはいませんでした</p>
+        </div>
+      <% end %>
+
+    <% else %>
+      <% if @books&.any? %>
+        <div class="grid sm:grid-cols-2 gap-6">
+          <% @books.each do |book| %>
+            <%= render "books/book_card", book: book, show_user: true %>
+          <% end %>
+        </div>
+
+        <% if @books.total_pages > 1 %>
+          <div class="mt-8 flex justify-center">
+            <%= paginate @books %>
+          </div>
+        <% end %>
+      <% else %>
+        <div class="empty-state">
+          <svg class="empty-state-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                  d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+          </svg>
+          <h3 class="empty-state-title">投稿が見つかりません</h3>
+          <p class="empty-state-text">「<%= @query %>」に一致する投稿はありませんでした</p>
+        </div>
+      <% end %>
+    <% end %>
+
+  <% else %>
+    <div class="empty-state">
+      <svg class="empty-state-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+      </svg>
+      <h3 class="empty-state-title">キーワードを入力してください</h3>
+      <p class="empty-state-text">本のタイトルやユーザー名で検索できます</p>
+    </div>
+  <% end %>
+</div>

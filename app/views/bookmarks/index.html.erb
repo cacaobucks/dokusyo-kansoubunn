@@ -1,0 +1,31 @@
+<div class="max-w-4xl mx-auto">
+  <h1 class="text-2xl font-bold text-primary mb-6 flex items-center gap-2">
+    <svg class="h-6 w-6 text-accent-primary" fill="currentColor" viewBox="0 0 20 20">
+      <path d="M5 4a2 2 0 012-2h6a2 2 0 012 2v14l-5-2.5L5 18V4z" />
+    </svg>
+    ブックマーク
+  </h1>
+
+  <% if @books.any? %>
+    <div class="grid sm:grid-cols-2 gap-6">
+      <% @books.each do |book| %>
+        <%= render "books/book_card", book: book, show_user: true %>
+      <% end %>
+    </div>
+
+    <% if @books.total_pages > 1 %>
+      <div class="mt-8 flex justify-center">
+        <%= paginate @books %>
+      </div>
+    <% end %>
+  <% else %>
+    <div class="empty-state">
+      <svg class="empty-state-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+              d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
+      </svg>
+      <h3 class="empty-state-title">ブックマークはありません</h3>
+      <p class="empty-state-text">気になる投稿をブックマークして後で読み返しましょう</p>
+    </div>
+  <% end %>
+</div>

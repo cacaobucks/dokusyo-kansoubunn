@@ -1,12 +1,44 @@
 Rails.application.routes.draw do
+  # Devise
   devise_for :users
-  root to: "home#top"
-  get 'home/about', to: 'home#about', as: 'about'
-  resources :books, only: [:new, :create, :index, :show, :destroy, :edit, :update] do
-    resource :favorites, only: [:create, :destroy]
+
+  # Root
+  root "home#top"
+  get "about", to: "home#about"
+
+  # Books
+  resources :books do
+    resource :favorite, only: [:create, :destroy]
+    resource :bookmark, only: [:create, :destroy]
     resources :book_comments, only: [:create, :destroy]
+    resource :rating, only: [:create, :update]
   end
-  resources :users, only: [:show, :edit, :update, :index, :create]
-  resource :favorites, only: [:create, :destroy]
-  # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html
+
+  # Users
+  resources :users, only: [:index, :show, :edit, :update] do
+    member do
+      get :followers
+      get :following
+    end
+    resource :relationship, only: [:create, :destroy]
+  end
+
+  # Bookmarks
+  resources :bookmarks, only: [:index]
+
+  # Notifications
+  resources :notifications, only: [:index] do
+    member do
+      patch :mark_as_read
+    end
+    collection do
+      post :mark_all_as_read
+    end
+  end
+
+  # Search
+  get "search", to: "search#index"
+
+  # Health check
+  get "up", to: "rails/health#show", as: :rails_health_check
 end

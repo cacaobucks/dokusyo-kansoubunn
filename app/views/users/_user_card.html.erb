@@ -1,0 +1,41 @@
+<%# locals: (user:) %>
+<div class="card card-body">
+  <%= link_to user_path(user), class: "block text-center hover:opacity-80 transition-opacity" do %>
+    <% if user.profile_image.attached? %>
+      <%= image_tag user.profile_image.variant(resize_to_fill: [64, 64]), class: "avatar avatar-lg mx-auto mb-3" %>
+    <% else %>
+      <div class="avatar avatar-lg bg-accent-primary flex items-center justify-center text-white text-xl font-medium mx-auto mb-3">
+        <%= user.name[0].upcase %>
+      </div>
+    <% end %>
+    <div class="font-medium text-primary"><%= user.name %></div>
+    <% if user.username.present? %>
+      <div class="text-sm text-muted">@<%= user.username %></div>
+    <% end %>
+  <% end %>
+
+  <div class="grid grid-cols-3 gap-2 mt-4 pt-4 border-t border-border-color text-center text-xs">
+    <div>
+      <div class="font-semibold text-primary"><%= user.books_count %></div>
+      <div class="text-muted">投稿</div>
+    </div>
+    <div>
+      <%= link_to followers_user_path(user), class: "hover:text-accent-primary transition-colors" do %>
+        <div class="font-semibold text-primary"><%= user.followers_count %></div>
+        <div class="text-muted">フォロワー</div>
+      <% end %>
+    </div>
+    <div>
+      <%= link_to following_user_path(user), class: "hover:text-accent-primary transition-colors" do %>
+        <div class="font-semibold text-primary"><%= user.following_count %></div>
+        <div class="text-muted">フォロー中</div>
+      <% end %>
+    </div>
+  </div>
+
+  <% if user_signed_in? && current_user != user %>
+    <div id="follow_button_<%= user.id %>" class="mt-4">
+      <%= render "users/follow_button", user: user %>
+    </div>
+  <% end %>
+</div>

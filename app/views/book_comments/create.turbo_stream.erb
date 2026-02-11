@@ -1,0 +1,15 @@
+<%= turbo_stream.prepend "comments_list" do %>
+  <%= render "book_comments/comment", comment: @book_comment %>
+<% end %>
+
+<%= turbo_stream.replace "comment_form" do %>
+  <%= render "book_comments/form", book: @book, book_comment: BookComment.new %>
+<% end %>
+
+<%= turbo_stream.replace "comments_count_#{@book.id}" do %>
+  <span id="comments_count_<%= @book.id %>"><%= @book.reload.book_comments_count %></span>
+<% end %>
+
+<%= turbo_stream.replace "comments_total" do %>
+  <span id="comments_total"><%= @book.book_comments.count %></span>
+<% end %>

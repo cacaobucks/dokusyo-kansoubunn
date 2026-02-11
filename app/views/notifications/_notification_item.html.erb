@@ -1,0 +1,23 @@
+<%# locals: (notification:) - For dropdown %>
+<% target = notification.target_path %>
+<%= link_to (target ? polymorphic_path(target) : "#"),
+            class: "block px-4 py-3 hover:bg-bg-tertiary transition-colors #{notification.read? ? '' : 'bg-accent-primary/5'}" do %>
+  <div class="flex items-start gap-3">
+    <% if notification.actor.profile_image.attached? %>
+      <%= image_tag notification.actor.profile_image.variant(resize_to_fill: [32, 32]), class: "avatar avatar-sm flex-shrink-0" %>
+    <% else %>
+      <div class="avatar avatar-sm bg-accent-primary flex items-center justify-center text-white text-xs font-medium flex-shrink-0">
+        <%= notification.actor.name[0].upcase %>
+      </div>
+    <% end %>
+
+    <div class="flex-1 min-w-0">
+      <p class="text-sm text-primary line-clamp-2"><%= notification.message %></p>
+      <p class="text-xs text-muted mt-1"><%= time_ago_in_words(notification.created_at) %>前</p>
+    </div>
+
+    <% unless notification.read? %>
+      <div class="w-2 h-2 rounded-full bg-accent-primary flex-shrink-0 mt-2"></div>
+    <% end %>
+  </div>
+<% end %>

@@ -1,0 +1,9 @@
+<%= turbo_stream.remove @book_comment %>
+
+<%= turbo_stream.replace "comments_count_#{@book.id}" do %>
+  <span id="comments_count_<%= @book.id %>"><%= @book.reload.book_comments_count %></span>
+<% end %>
+
+<%= turbo_stream.replace "comments_total" do %>
+  <span id="comments_total"><%= @book.book_comments.count %></span>
+<% end %>
